@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class CustomBuilderTableList {
+public class CustomBuilderMapAndList {
     private static void testMyStringBuilder() {
         StringBuilder builder = new StringBuilder();
         MyStringBuilder myStringBuilder = new MyStringBuilder();
