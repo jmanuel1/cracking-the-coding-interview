@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 public class CustomBuilderTableList {
     private static void testMyStringBuilder() {
@@ -36,9 +33,26 @@ public class CustomBuilderTableList {
         assert hashMap.get("keys") == null && myHashMap.get("keys") == null;
     }
 
+    private static void testMyArrayList() {
+        List<Integer> arrayList = new ArrayList<>();
+        MyArrayList<Integer> myArrayList = new MyArrayList<>();
+        int hailstoneSeq[] = { 39, 118, 59, 178, 89, 268, 134, 67, 202, 101,
+                304, 152, 77, 232, 116, 58, 29, 88, 44, 22, 11, 34, 17, 52, 26,
+                13, 40, 20, 10, 5, 16, 8, 4, 2, 1 };
+
+        for (int n : hailstoneSeq) {
+            arrayList.add(n);
+            myArrayList.add(n);
+        }
+
+        assert arrayList.get(4).equals(myArrayList.get(4)) &&
+                myArrayList.get(4).equals(89);
+    }
+
     public static void main(String[] args) {
         testMyStringBuilder();
         testMyHashMap();
+        testMyArrayList();
     }
 }
 
@@ -138,5 +152,50 @@ class KeyValPair<KeyType, ValType> {
 
     void setVal(ValType val) {
         this.val = val;
+    }
+}
+
+// custom ArrayList
+class MyArrayList<ElemType> {
+    private ElemType array[];
+    private int length;
+
+    MyArrayList() {
+        final int INITIAL_SIZE = 16;
+        //noinspection unchecked
+        array = (ElemType[]) new Object[INITIAL_SIZE];
+        length = 0;
+    }
+
+    void add(ElemType elem) {
+        set(length, elem);
+    }
+
+    ElemType get(@SuppressWarnings("SameParameterValue") int index) {
+        return array[index];
+    }
+
+    @SuppressWarnings("unused")
+    ElemType remove(int index) {
+        ElemType elem = array[index];
+        System.arraycopy(array, index + 1, array, index,
+                array.length - index - 1);
+        return elem;
+    }
+
+    @SuppressWarnings({"WeakerAccess", "UnusedReturnValue"})
+    ElemType set(int index, ElemType elem) {
+        ElemType prevElem = array[index];
+        int newLength = Math.max(index + 1, length);
+
+        if (newLength >= array.length) {
+            //noinspection unchecked
+            ElemType biggerArray[] = (ElemType[]) new Object[array.length*2];
+            System.arraycopy(array, 0, biggerArray, 0, length);
+            array = biggerArray;
+            length = newLength;
+        }
+        array[index] = elem;
+        return prevElem;
     }
 }
