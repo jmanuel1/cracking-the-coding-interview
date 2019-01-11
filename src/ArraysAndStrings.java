@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -5,6 +6,7 @@ import java.util.function.Predicate;
 public class ArraysAndStrings {
     public static void main(String[] args) {
         IsUniqueQuestion.test();
+        CheckPermutationQuestion.test();
     }
 }
 
@@ -67,6 +69,75 @@ class IsUniqueQuestion {
                 if (str.charAt(i) == str.charAt(j)) {
                     return false;
                 }
+            }
+        }
+        return true;
+    }
+}
+
+/* 1.2 Check Permutation */
+class CheckPermutationQuestion {
+    @SuppressWarnings("ConstantConditions")
+    static void test() {
+        /* Test cases */
+        // true case
+        String trueCase[] = { "String", "ringSt" };
+        // false case
+        String falseCase[] = { "Hello", "World" };
+        // true for empty strings
+        String emptyTrueCase[] = { "", "" };
+        // trivial cases: equal strings (true), different length strings (false)
+        String equalTrueCase[] = { "equal", "equal" };
+        String lengthFalseCase[] = { "different", "length" };
+        // respect letter case
+        String caseFalseCase[] = { "Jason", "nosaj" };
+        // false if exactly one is null
+        String oneNullCase[] = { null, "Hello" };
+        // true if both null
+        String bothNullCase[] = { null, null };
+        // bounds checking for different length strings (when one is a prefix of
+        // the other)
+        String boundsCheck[] = { "bounds", "bounds check" };
+        // especially when strings are already sorted
+        String boundsCheckSorted[] = { "abcd", "abcdef" };
+
+        // assume one char is one code point and that every character has only
+        // one representation
+
+        assert checkPermutation(trueCase[0], trueCase[1]);
+        assert !checkPermutation(falseCase[0], falseCase[1]);
+        assert checkPermutation(emptyTrueCase[0], emptyTrueCase[1]);
+        assert checkPermutation(equalTrueCase[0], equalTrueCase[1]);
+        assert !checkPermutation(lengthFalseCase[0], lengthFalseCase[1]);
+        assert !checkPermutation(caseFalseCase[0], caseFalseCase[1]);
+        assert !checkPermutation(oneNullCase[0], oneNullCase[1]);
+        assert checkPermutation(bothNullCase[0], bothNullCase[1]);
+        assert !checkPermutation(boundsCheck[0], boundsCheck[1]);
+        assert !checkPermutation(boundsCheckSorted[0], boundsCheckSorted[1]);
+        // check commutativity
+        assert checkPermutation(trueCase[1], trueCase[0]);
+        assert !checkPermutation(oneNullCase[1], oneNullCase[0]);
+        assert !checkPermutation(boundsCheck[1], boundsCheck[0]);
+        assert !checkPermutation(boundsCheckSorted[1], boundsCheckSorted[0]);
+    }
+
+    private static boolean checkPermutation(String s, String r) {
+        if (s == null && r == null) return true;
+        else if (s == null || r == null) return false;
+
+        if (s.length() != r.length()) return false;
+
+        char sAsChars[] = s.toCharArray();
+        char rAsChars[] = r.toCharArray();
+
+        // dual-pivot quicksort: often O(n log n), quadratic worst case
+        // https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(char[])
+        // it might be faster to collect character frequencies
+        Arrays.sort(sAsChars);
+        Arrays.sort(rAsChars);
+        for (int i = 0; i < sAsChars.length; i++) {
+            if (sAsChars[i] != rAsChars[i]) {
+                return false;
             }
         }
         return true;
