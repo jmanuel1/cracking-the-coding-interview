@@ -45,6 +45,8 @@ public class CustomBuilderMapAndList {
             myArrayList.add(n);
         }
 
+//        System.out.printf("Java: %d\nMe: %d", arrayList.get(4), myArrayList.get(4));
+
         assert arrayList.get(4).equals(myArrayList.get(4)) &&
                 myArrayList.get(4).equals(89);
     }
@@ -158,7 +160,7 @@ class KeyValPair<KeyType, ValType> {
 // custom ArrayList
 class MyArrayList<ElemType> {
     private ElemType array[];
-    private int length;
+    private int length; // length as it appears to the outside
 
     MyArrayList() {
         final int INITIAL_SIZE = 16;
@@ -172,6 +174,10 @@ class MyArrayList<ElemType> {
     }
 
     ElemType get(@SuppressWarnings("SameParameterValue") int index) {
+//        System.out.printf("Internal array (length %d): \n", length);
+//        for (int i = 0; i < length; i++) {
+//            System.out.print(array[i] + " ");
+//        }
         return array[index];
     }
 
@@ -180,22 +186,31 @@ class MyArrayList<ElemType> {
         ElemType elem = array[index];
         System.arraycopy(array, index + 1, array, index,
                 array.length - index - 1);
+        length--;
         return elem;
     }
 
     @SuppressWarnings({"WeakerAccess", "UnusedReturnValue"})
     ElemType set(int index, ElemType elem) {
-        ElemType prevElem = array[index];
+        ElemType prevElem;
         int newLength = Math.max(index + 1, length);
+
+        if (index >= length) {
+            prevElem = null;
+        } else {
+            prevElem = array[index];
+        }
 
         if (newLength >= array.length) {
             //noinspection unchecked
             ElemType biggerArray[] = (ElemType[]) new Object[array.length*2];
             System.arraycopy(array, 0, biggerArray, 0, length);
             array = biggerArray;
-            length = newLength;
         }
+
+        length = newLength;
         array[index] = elem;
+
         return prevElem;
     }
 }
