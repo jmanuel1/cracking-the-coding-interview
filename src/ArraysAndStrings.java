@@ -7,6 +7,7 @@ public class ArraysAndStrings {
     public static void main(String[] args) {
         IsUniqueQuestion.test();
         CheckPermutationQuestion.test();
+        URLifyQuestion.test();
     }
 }
 
@@ -141,5 +142,49 @@ class CheckPermutationQuestion {
             }
         }
         return true;
+    }
+}
+
+class URLifyQuestion {
+    @SuppressWarnings("ConstantConditions")
+    static void test() {
+        char johnSmith[] = "Mr John Smith    ".toCharArray();
+        char empty[] = new char[0];
+        char multipleSpaces[] = "Hello    there        ".toCharArray();
+        char onlySpaces[] = "         ".toCharArray(); // true length = 3
+        char otherWhitespace[] = { '\n', '\t' };
+        char noSpaces[] = "none".toCharArray();
+        char nullCase[] = null;
+
+        URLify(johnSmith, 13);
+        assert Arrays.equals(johnSmith, "Mr%20John%20Smith".toCharArray());
+        URLify(empty, 0);
+        assert Arrays.equals(empty, new char[0]);
+        URLify(multipleSpaces, 14);
+        assert Arrays.equals(multipleSpaces,
+                "Hello%20%20%20%20there".toCharArray());
+        URLify(onlySpaces, 3);
+        assert Arrays.equals(onlySpaces, "%20%20%20".toCharArray());
+        URLify(otherWhitespace, 2);
+        assert Arrays.equals(otherWhitespace, new char[] { '\n', '\t' });
+        URLify(noSpaces, 4);
+        assert Arrays.equals(noSpaces, "none".toCharArray());
+        URLify(nullCase, 0);
+        assert Arrays.equals(nullCase, null);
+    }
+
+    // in place
+    private static void URLify(char string[], int length) {
+        for (int i = 0; i < length; i++) {
+            if (string[i] == ' ') {
+                // shift the rest of the string over by 2
+                System.arraycopy(string, i + 1, string, i + 3,
+                        length - i - 1);
+                // and add two the 'real' length of the string
+                length += 2;
+                // replace the space with %20
+                string[i] = '%'; string[i + 1] = '2'; string[i + 2] = '0';
+            }
+        }
     }
 }
