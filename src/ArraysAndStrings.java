@@ -8,6 +8,7 @@ public class ArraysAndStrings {
         IsUniqueQuestion.test();
         CheckPermutationQuestion.test();
         URLifyQuestion.test();
+        PalindromePermutationQuestion.test();
     }
 }
 
@@ -82,25 +83,25 @@ class CheckPermutationQuestion {
     static void test() {
         /* Test cases */
         // true case
-        String trueCase[] = { "String", "ringSt" };
+        String trueCase[] = {"String", "ringSt"};
         // false case
-        String falseCase[] = { "Hello", "World" };
+        String falseCase[] = {"Hello", "World"};
         // true for empty strings
-        String emptyTrueCase[] = { "", "" };
+        String emptyTrueCase[] = {"", ""};
         // trivial cases: equal strings (true), different length strings (false)
-        String equalTrueCase[] = { "equal", "equal" };
-        String lengthFalseCase[] = { "different", "length" };
+        String equalTrueCase[] = {"equal", "equal"};
+        String lengthFalseCase[] = {"different", "length"};
         // respect letter case
-        String caseFalseCase[] = { "Jason", "nosaj" };
+        String caseFalseCase[] = {"Jason", "nosaj"};
         // false if exactly one is null
-        String oneNullCase[] = { null, "Hello" };
+        String oneNullCase[] = {null, "Hello"};
         // true if both null
-        String bothNullCase[] = { null, null };
+        String bothNullCase[] = {null, null};
         // bounds checking for different length strings (when one is a prefix of
         // the other)
-        String boundsCheck[] = { "bounds", "bounds check" };
+        String boundsCheck[] = {"bounds", "bounds check"};
         // especially when strings are already sorted
-        String boundsCheckSorted[] = { "abcd", "abcdef" };
+        String boundsCheckSorted[] = {"abcd", "abcdef"};
 
         // assume one char is one code point and that every character has only
         // one representation
@@ -152,7 +153,7 @@ class URLifyQuestion {
         char empty[] = new char[0];
         char multipleSpaces[] = "Hello    there        ".toCharArray();
         char onlySpaces[] = "         ".toCharArray(); // true length = 3
-        char otherWhitespace[] = { '\n', '\t' };
+        char otherWhitespace[] = {'\n', '\t'};
         char noSpaces[] = "none".toCharArray();
         char nullCase[] = null;
 
@@ -166,7 +167,7 @@ class URLifyQuestion {
         URLify(onlySpaces, 3);
         assert Arrays.equals(onlySpaces, "%20%20%20".toCharArray());
         URLify(otherWhitespace, 2);
-        assert Arrays.equals(otherWhitespace, new char[] { '\n', '\t' });
+        assert Arrays.equals(otherWhitespace, new char[]{'\n', '\t'});
         URLify(noSpaces, 4);
         assert Arrays.equals(noSpaces, "none".toCharArray());
         URLify(nullCase, 0);
@@ -183,8 +184,50 @@ class URLifyQuestion {
                 // and add two the 'real' length of the string
                 length += 2;
                 // replace the space with %20
-                string[i] = '%'; string[i + 1] = '2'; string[i + 2] = '0';
+                string[i] = '%';
+                string[i + 1] = '2';
+                string[i + 2] = '0';
             }
         }
+    }
+}
+
+/* 1.4 Palindrome Permutation */
+class PalindromePermutationQuestion {
+    static void test() {
+        // two simple cases
+        assert isPermutationOfPalindrome("racecar");
+        assert !isPermutationOfPalindrome("not");
+        // ignore case
+        assert isPermutationOfPalindrome("Tat");
+        // ignore spaces
+        assert isPermutationOfPalindrome("tact coa");
+        // true on empty string
+        assert isPermutationOfPalindrome("");
+        // is false on null
+        assert !isPermutationOfPalindrome(null);
+    }
+
+    private static boolean isPermutationOfPalindrome(String string) {
+        if (string == null) {
+            return false;
+        }
+
+        // get rid of spaces in the string and lower case it
+        String sNormalized =
+                string.replace(" ", "").toLowerCase();
+        int countsMod2[] = new int[26]; // assume only English letters
+
+        for (char c : sNormalized.toCharArray()) {
+            int index = c - 'a';
+            countsMod2[index] = (countsMod2[index] + 1) % 2;
+        }
+
+        int total = 0;
+        for (int count : countsMod2) {
+            total += count;
+        }
+
+        return total < 2;
     }
 }
