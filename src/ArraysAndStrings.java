@@ -206,6 +206,7 @@ class PalindromePermutationQuestion {
         // true on empty string
         assert isPermutationOfPalindrome("");
         // is false on null
+        //noinspection ConstantConditions
         assert !isPermutationOfPalindrome(null);
     }
 
