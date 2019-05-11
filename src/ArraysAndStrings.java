@@ -9,6 +9,7 @@ public class ArraysAndStrings {
         CheckPermutationQuestion.test();
         URLifyQuestion.test();
         PalindromePermutationQuestion.test();
+        OneAwayQuestion.test();
     }
 }
 
@@ -229,5 +230,74 @@ class PalindromePermutationQuestion {
         }
 
         return total < 2;
+    }
+}
+
+/* 1.5 One Away */
+// TODO: Check the official solution for this one especially
+class OneAwayQuestion {
+    static void test() {
+        assert isOneAway("pale", "ple");
+        assert isOneAway("pales", "pale");
+        assert isOneAway("pale", "bale");
+        assert !isOneAway("pale", "bake");
+        // Difference in length is too large
+        assert !isOneAway("pale", "pales!");
+        // Relation is symmetric
+        assert isOneAway("ple", "pale")
+                == isOneAway("pale", "ple");
+        // Relation is reflexive
+        String reflexiveTestString = "ftbfbbgnhnfvg";
+        assert isOneAway(reflexiveTestString, reflexiveTestString);
+        // Handles empty strings
+        assert isOneAway("", "a");
+        // Not necessarily letters
+        assert isOneAway("11!", "121!");
+        // False if there is a null
+        //noinspection ConstantConditions
+        assert !isOneAway("", null);
+        // Length difference of 1, but false
+        assert !isOneAway("hello", "yellow");
+        assert !isOneAway("hi there!", " hi there");
+        assert !isOneAway("ABCD", "AED");
+    }
+
+    static private boolean isOneAway(String a, String b) {
+        // return false on any null
+        if (a == null || b == null) return false;
+
+        // too many insertions/deletions
+        if (Math.abs(a.length() - b.length()) > 1) return false;
+
+        if (a.length() == b.length()) { // characters have been substituted
+            int differences = 0;
+            for (int i = 0; i < a.length(); i++) {
+                if (a.charAt(i) != b.charAt(i)) {
+                    differences++;
+                    if (differences > 1) return false;
+                }
+            }
+        }
+
+        // There must be a length difference of one here, which means only one
+        // insertion or deletion.
+        if (a.length() - b.length() == 1) { // a character has been deleted
+            int differences = 0;
+            for (int i = 0, j = 0; i < a.length() && j < b.length(); i++, j++) {
+                if (a.charAt(i) != b.charAt(j)) {
+                    differences++;
+                    // hold the index into b back to so that we can compare b[j]
+                    // to a[i+1] next loop
+                    j--;
+                    if (differences > 1) return false;
+                }
+            }
+        }
+
+        // a character has been inserted; flip the arguments and treat it like
+        // deletion
+        if (a.length() - b.length() == -1) return isOneAway(b, a);
+
+        return true;
     }
 }
