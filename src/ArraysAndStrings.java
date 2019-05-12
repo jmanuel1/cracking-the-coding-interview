@@ -10,6 +10,7 @@ public class ArraysAndStrings {
         URLifyQuestion.test();
         PalindromePermutationQuestion.test();
         OneAwayQuestion.test();
+        StringCompressionQuestion.test();
     }
 }
 
@@ -300,5 +301,53 @@ class OneAwayQuestion {
         if (a.length() - b.length() == -1) return isOneAway(b, a);
 
         return true;
+    }
+}
+
+/* 1.6 String Compression */
+class StringCompressionQuestion {
+    static void test() {
+        assert compressString("aabcccccaaa").equals("a2b1c5a3");
+        // compressed would not be shorter, return original string
+        assert compressString("abcd").equals("abcd"); // longer
+        assert compressString("aaab").equals("aaab"); // same length
+        // empty string
+        assert compressString("").equals("");
+        // null: choose to return "" instead of null
+        assert compressString(null).equals("");
+        // a letter with a more than one-digit count
+        assert compressString("fffffffffffffffff").equals("f17");
+        // case
+        assert compressString("aaaaAAA").equals("a4A3");
+        // we can assume the original string has only English letters
+    }
+
+    private static String compressString(String string) {
+        char currentLetter = '@'; // initially not a letter
+        int count = 0;
+        StringBuilder builder = new StringBuilder();
+
+        if (string == null) return "";
+
+        for (char letter : string.toCharArray()) {
+            if (letter == currentLetter) {
+                count++;
+            } else {
+                if (count > 0) {
+                    builder.append(currentLetter).append(count);
+                }
+                currentLetter = letter;
+                count = 1;
+            }
+        }
+        // make sure to encode the last run
+        if (count > 0) {
+            builder.append(currentLetter).append(count);
+        }
+
+        if (builder.length() >= string.length())
+            return string;
+        else
+            return builder.toString();
     }
 }
