@@ -353,11 +353,33 @@ class StringCompressionQuestion {
     }
 }
 
+/* 1.7 Rotate Matrix */
 class RotateMatrixQuestion {
-    static void test() {
-        int[][] emptyMatrix = new int[0][0];
-        int[][] singletonMatrix = {{1}};
-        int[][] matrix =
+    private static int[][] emptyMatrix;
+    private static int[][] singletonMatrix;
+    private static int[][] rotatedSingletonMatrix = {{1}};
+    private static int[][] matrix;
+    private static int[][] rotatedMatrix =
+            {
+                    {3, 7, 7, 6, 5, 7},
+                    {45, 3, 454, 345, 453, 656},
+                    {857, 565, 3, 5, 3, 4},
+                    {7, 6, 2, 4, 5, 3},
+                    {56, 365, 347, 756, 546, 642},
+                    {234, 567, 567, 456, 765, 455}
+            };
+    private static int[][] oddSizedMatrix, rotatedOddSizedMatrix = {
+            {45, 3, 454, 345, 453},
+            {857, 565, 3, 5, 3},
+            {7, 6, 2, 4, 5},
+            {56, 365, 347, 756, 546},
+            {234, 567, 567, 456, 765}
+    };
+
+    private static void initMatrices() {
+        emptyMatrix = new int[0][0];
+        singletonMatrix = new int[][]{{1}};
+        matrix = new int[][]
                 {
                         {234, 56, 7, 857, 45, 3},
                         {567, 365, 6, 565, 3, 7},
@@ -366,15 +388,47 @@ class RotateMatrixQuestion {
                         {765, 546, 5, 3, 453, 5},
                         {455, 642, 3, 4, 656, 7}
                 };
-        int[][] rotatedMatrix =
+        oddSizedMatrix = new int[][]
                 {
-                        {3, 7, 7, 6, 5, 7},
-                        {45, 3, 454, 345, 453, 656},
-                        {857, 565, 3, 5, 3, 4},
-                        {7, 6, 2, 4, 5, 3},
-                        {56, 365, 347, 756, 546, 642},
-                        {234, 567, 567, 456, 765, 455}
+                        {234, 56, 7, 857, 45},
+                        {567, 365, 6, 565, 3},
+                        {567, 347, 2, 3, 454},
+                        {456, 756, 4, 5, 345},
+                        {765, 546, 5, 3, 453}
                 };
+    }
+
+    static void test() {
+        // reset matrices here
+        initMatrices();
+        testPureImplementation();
+        initMatrices();
+        testInPlaceImplementation();
+    }
+
+    private static void testInPlaceImplementation() {
+        rotateMatrixInPlace(emptyMatrix);
+        assert Arrays.deepEquals(emptyMatrix, new int[0][0]);
+        rotateMatrixInPlace(singletonMatrix);
+        assert Arrays.deepEquals(singletonMatrix, rotatedSingletonMatrix);
+        // assume counterclockwise rotation
+        rotateMatrixInPlace(matrix);
+        assert Arrays.deepEquals(matrix, rotatedMatrix);
+        // make sure the logic doesn't fail based on size parity
+        rotateMatrixInPlace(oddSizedMatrix);
+        assert Arrays.deepEquals(oddSizedMatrix, rotatedOddSizedMatrix);
+        // null --> Exception since algorithm is in-place
+        boolean threwNPE = false;
+        try {
+            //noinspection ConstantConditions
+            rotateMatrixInPlace(null);
+        } catch (NullPointerException e) {
+            threwNPE = true;
+        }
+        assert threwNPE;
+    }
+
+    private static void testPureImplementation() {
         assert Arrays.deepEquals(rotateMatrix(emptyMatrix), emptyMatrix);
         assert Arrays.deepEquals(rotateMatrix(singletonMatrix),
                 singletonMatrix);
@@ -403,5 +457,27 @@ class RotateMatrixQuestion {
         }
 
         return rotatedMatrix;
+    }
+
+    private static void rotateMatrixInPlace(int[][] matrix) {
+        int size = matrix.length;
+        if (size <= 1) {
+            return;
+        }
+
+        for (int row = 0; row < size / 2; row++) {
+            for (int col = row; col < size - 1 - row; col++) {
+                // get the four numbers to rotate, in counterclockwise order
+                int a = matrix[row][col];
+                int b = matrix[size - 1 - col][row];
+                int c = matrix[size - 1 - row][size - 1 - col];
+                int d = matrix[col][size - 1 - row];
+                // now rotate
+                matrix[row][col] = d;
+                matrix[size - 1 - col][row] = a;
+                matrix[size - 1 - row][size - 1 - col] = b;
+                matrix[col][size - 1 - row] = c;
+            }
+        }
     }
 }
