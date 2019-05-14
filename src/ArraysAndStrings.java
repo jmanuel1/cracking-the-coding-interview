@@ -11,6 +11,7 @@ public class ArraysAndStrings {
         PalindromePermutationQuestion.test();
         OneAwayQuestion.test();
         StringCompressionQuestion.test();
+        RotateMatrixQuestion.test();
     }
 }
 
@@ -349,5 +350,58 @@ class StringCompressionQuestion {
             return string;
         else
             return builder.toString();
+    }
+}
+
+class RotateMatrixQuestion {
+    static void test() {
+        int[][] emptyMatrix = new int[0][0];
+        int[][] singletonMatrix = {{1}};
+        int[][] matrix =
+                {
+                        {234, 56, 7, 857, 45, 3},
+                        {567, 365, 6, 565, 3, 7},
+                        {567, 347, 2, 3, 454, 7},
+                        {456, 756, 4, 5, 345, 6},
+                        {765, 546, 5, 3, 453, 5},
+                        {455, 642, 3, 4, 656, 7}
+                };
+        int[][] rotatedMatrix =
+                {
+                        {3, 7, 7, 6, 5, 7},
+                        {45, 3, 454, 345, 453, 656},
+                        {857, 565, 3, 5, 3, 4},
+                        {7, 6, 2, 4, 5, 3},
+                        {56, 365, 347, 756, 546, 642},
+                        {234, 567, 567, 456, 765, 455}
+                };
+        assert Arrays.deepEquals(rotateMatrix(emptyMatrix), emptyMatrix);
+        assert Arrays.deepEquals(rotateMatrix(singletonMatrix),
+                singletonMatrix);
+        // assume counterclockwise rotation
+        assert Arrays.deepEquals(rotateMatrix(matrix), rotatedMatrix);
+        // null --> { {} }
+        assert Arrays.deepEquals(rotateMatrix(null), emptyMatrix);
+    }
+
+    // not in-place
+    private static int[][] rotateMatrix(int[][] matrix) {
+        if (matrix == null) {
+            return new int[0][0];
+        }
+
+        int size = matrix.length;
+        if (size <= 1) {
+            return matrix;
+        }
+
+        int[][] rotatedMatrix = new int[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                rotatedMatrix[size - 1 - j][i] = matrix[i][j];
+            }
+        }
+
+        return rotatedMatrix;
     }
 }
