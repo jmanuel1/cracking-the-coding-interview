@@ -1,6 +1,4 @@
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class ArraysAndStrings {
@@ -12,6 +10,7 @@ public class ArraysAndStrings {
         OneAwayQuestion.test();
         StringCompressionQuestion.test();
         RotateMatrixQuestion.test();
+        ZeroMatrixQuestion.test();
     }
 }
 
@@ -86,25 +85,25 @@ class CheckPermutationQuestion {
     static void test() {
         /* Test cases */
         // true case
-        String trueCase[] = {"String", "ringSt"};
+        String[] trueCase = {"String", "ringSt"};
         // false case
-        String falseCase[] = {"Hello", "World"};
+        String[] falseCase = {"Hello", "World"};
         // true for empty strings
-        String emptyTrueCase[] = {"", ""};
+        String[] emptyTrueCase = {"", ""};
         // trivial cases: equal strings (true), different length strings (false)
-        String equalTrueCase[] = {"equal", "equal"};
-        String lengthFalseCase[] = {"different", "length"};
+        String[] equalTrueCase = {"equal", "equal"};
+        String[] lengthFalseCase = {"different", "length"};
         // respect letter case
-        String caseFalseCase[] = {"Jason", "nosaj"};
+        String[] caseFalseCase = {"Jason", "nosaj"};
         // false if exactly one is null
-        String oneNullCase[] = {null, "Hello"};
+        String[] oneNullCase = {null, "Hello"};
         // true if both null
-        String bothNullCase[] = {null, null};
+        String[] bothNullCase = {null, null};
         // bounds checking for different length strings (when one is a prefix of
         // the other)
-        String boundsCheck[] = {"bounds", "bounds check"};
+        String[] boundsCheck = {"bounds", "bounds check"};
         // especially when strings are already sorted
-        String boundsCheckSorted[] = {"abcd", "abcdef"};
+        String[] boundsCheckSorted = {"abcd", "abcdef"};
 
         // assume one char is one code point and that every character has only
         // one representation
@@ -132,8 +131,8 @@ class CheckPermutationQuestion {
 
         if (s.length() != r.length()) return false;
 
-        char sAsChars[] = s.toCharArray();
-        char rAsChars[] = r.toCharArray();
+        char[] sAsChars = s.toCharArray();
+        char[] rAsChars = r.toCharArray();
 
         // dual-pivot quicksort: often O(n log n), quadratic worst case
         // https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(char[])
@@ -152,13 +151,13 @@ class CheckPermutationQuestion {
 class URLifyQuestion {
     @SuppressWarnings("ConstantConditions")
     static void test() {
-        char johnSmith[] = "Mr John Smith    ".toCharArray();
-        char empty[] = new char[0];
-        char multipleSpaces[] = "Hello    there        ".toCharArray();
-        char onlySpaces[] = "         ".toCharArray(); // true length = 3
-        char otherWhitespace[] = {'\n', '\t'};
-        char noSpaces[] = "none".toCharArray();
-        char nullCase[] = null;
+        char[] johnSmith = "Mr John Smith    ".toCharArray();
+        char[] empty = new char[0];
+        char[] multipleSpaces = "Hello    there        ".toCharArray();
+        char[] onlySpaces = "         ".toCharArray(); // true length = 3
+        char[] otherWhitespace = {'\n', '\t'};
+        char[] noSpaces = "none".toCharArray();
+        char[] nullCase = null;
 
         URLify(johnSmith, 13);
         assert Arrays.equals(johnSmith, "Mr%20John%20Smith".toCharArray());
@@ -178,7 +177,7 @@ class URLifyQuestion {
     }
 
     // in place
-    private static void URLify(char string[], int length) {
+    private static void URLify(char[] string, int length) {
         for (int i = 0; i < length; i++) {
             if (string[i] == ' ') {
                 // shift the rest of the string over by 2
@@ -220,7 +219,7 @@ class PalindromePermutationQuestion {
         // get rid of spaces in the string and lower case it
         String sNormalized =
                 string.replace(" ", "").toLowerCase();
-        int countsMod2[] = new int[26]; // assume only English letters
+        int[] countsMod2 = new int[26]; // assume only English letters
 
         for (char c : sNormalized.toCharArray()) {
             int index = c - 'a';
@@ -479,5 +478,121 @@ class RotateMatrixQuestion {
                 matrix[col][size - 1 - row] = c;
             }
         }
+    }
+}
+
+/* 1.8 Zero Matrix */
+class ZeroMatrixQuestion {
+    private static int[][] emptyMatrix;
+    private static int[][] singletonMatrix;
+    private static int[][] zeroedSingletonMatrix = {{1}};
+    private static int[][] matrix;
+    private static int[][] zeroedMatrix =
+            {
+                    {234,  0,  0,   0, 45, 3},
+                    {0,    0,  0,   0,  0, 0},
+                    {567,  0,  0,   0, 454, 7},
+                    {0,    0, 0,   0,   0, 0},
+                    {0,    0,   0,   0, 0, 0},
+                    {455,  0, 0,   0, 656, 7}
+            };
+    private static int[][] oddSizedMatrix, zeroedOddSizedMatrix = {
+            {  0, 56,  0, 857,  0},
+            {  0,  0,  0,   0,  0},
+            {  0, 347, 0, 3,    0},
+            {  0, 756, 0, 5,    0},
+            {  0,   0, 0, 0,    0}
+    };
+
+    private static void initMatrices() {
+        emptyMatrix = new int[0][0];
+        singletonMatrix = new int[][]{{1}};
+        matrix = new int[][]
+                {
+                        {234, 56, 7, 857, 45, 3},
+                        {567, 365, 0, 565, 3, 7},
+                        {567, 347, 2, 3, 454, 7},
+                        {456, 756, 4, 0, 345, 6},
+                        {765, 0, 5, 3, 453, 5},
+                        {455, 642, 3, 4, 656, 7}
+                };
+        oddSizedMatrix = new int[][]
+                {
+                        {234, 56, 7, 857, 45},
+                        {567, 365, 0, 565, 3},
+                        {567, 347, 2, 3, 454},
+                        {456, 756, 4, 5, 345},
+                        {0, 546, 5, 3, 0}
+                };
+    }
+
+    // in place
+    // NOTE: I feel like there's a better way to implement this.
+    private static void zeroMatrix(
+            @SuppressWarnings("ConstantConditions") int[][] matrix
+    ) {
+        List<int[]> zeroLocations = new ArrayList<>();
+
+        findZeros(matrix, zeroLocations);
+
+        zeroFoundRowsAndCols(matrix, zeroLocations);
+    }
+
+    private static void zeroFoundRowsAndCols(
+            int[][] matrix,
+            List<int[]> zeroLocations
+    ) {
+        for (int[] location : zeroLocations) {
+            for (int row = 0; row < matrix.length; row++) {
+                for (int col = 0; col < matrix[0].length; col++) {
+                    if (row == location[0] || col == location[1]) {
+                        matrix[row][col] = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    private static void findZeros(int[][] matrix, List<int[]> zeroLocations) {
+        for (int row = 0; row < matrix.length; row++) {
+            for (int col = 0; col < matrix[0].length; col++) {
+                if (matrix[row][col] == 0) {
+                    int[] location = {row, col};
+                    zeroLocations.add(location);
+                }
+            }
+        }
+    }
+
+    // utility method for debugging
+    @SuppressWarnings("unused")
+    private static void printMatrix(int[][] matrix) {
+        for (int[] row : matrix) {
+            for (int element : row) {
+                System.out.print(element + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    static void test() {
+        initMatrices();
+        zeroMatrix(emptyMatrix);
+        assert Arrays.deepEquals(emptyMatrix, new int[0][0]);
+        zeroMatrix(singletonMatrix);
+        assert Arrays.deepEquals(singletonMatrix, zeroedSingletonMatrix);
+        zeroMatrix(matrix);
+        assert Arrays.deepEquals(matrix, zeroedMatrix);
+        // make sure the logic doesn't fail based on size parity
+        zeroMatrix(oddSizedMatrix);
+        assert Arrays.deepEquals(oddSizedMatrix, zeroedOddSizedMatrix);
+        // null --> Exception since algorithm is in-place
+        boolean threwNPE = false;
+        try {
+            zeroMatrix(null);
+        } catch (NullPointerException e) {
+            threwNPE = true;
+        }
+        assert threwNPE;
     }
 }
