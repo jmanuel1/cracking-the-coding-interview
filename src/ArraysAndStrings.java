@@ -11,6 +11,7 @@ public class ArraysAndStrings {
         StringCompressionQuestion.test();
         RotateMatrixQuestion.test();
         ZeroMatrixQuestion.test();
+        StringRotationQuestion.test();
     }
 }
 
@@ -594,5 +595,41 @@ class ZeroMatrixQuestion {
             threwNPE = true;
         }
         assert threwNPE;
+    }
+}
+
+/* 1.9 String Rotation */
+class StringRotationQuestion {
+    static void test() {
+        // a true case
+        assert isRotationOf("waterbottle", "erbottlewat");
+        // empty strings -> true
+        assert isRotationOf("", "");
+        // different lengths -> false
+        assert !isRotationOf("fghi", "ifg");
+        // two nulls -> true
+        assert isRotationOf(null, null);
+        // null and a string -> false
+        assert !isRotationOf(null, "str");
+        // symmetry
+        assert isRotationOf("abcd", "dabc") ==
+                isRotationOf("dabc", "abcd");
+        // a false case
+        assert !isRotationOf("gnghn", "fggnf");
+        // two rotations of the same string
+        assert isRotationOf("gngf", "ngfg") ==
+                isRotationOf("gngf", "gfgn");
+    }
+
+    private static boolean isRotationOf(String a, String b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        if (a.length() != b.length()) return false;
+
+        return isSubstring(a, b + b);
+    }
+
+    private static boolean isSubstring(String a, String b) {
+        return b.contains(a);
     }
 }
